@@ -110,8 +110,6 @@ export class UserResolver {
       }
       console.log("err message:", err.message);
     }
-    console.log("ser", user);
-
     //store user id session
     //keep user logged in
     req.session.userId = user.id;
