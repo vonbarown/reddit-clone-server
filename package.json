@@ -9,7 +9,7 @@
     "start": "node dist/index.js",
     "start2": "ts-node src/index.ts",
     "dev": "nodemon dist/index.js",
-    "createMigration": "npx mikro-orm migration:create"
+    "create:migration": "npx mikro-orm migration:create"
   },
   "repository": {
     "type": "git",
