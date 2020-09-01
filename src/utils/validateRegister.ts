@@ -1,16 +1,18 @@
 import { UsernamePasswordInput } from "src/resolvers/UsernamePasswordInput";
 
 export const validateRegister = (options: UsernamePasswordInput) => {
-  if (!options.email.includes("@")) {
+  const validEmail = RegExp(
+    `/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@
+    (([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/`
+  );
+  if (!options.email.match(validEmail)) {
     //TODO add in some regex
-    return {
-      errors: [
-        {
-          field: "email",
-          message: "Please enter a valid email.",
-        },
-      ],
-    };
+    return [
+      {
+        field: "email",
+        message: "Please enter a valid email.",
+      },
+    ];
   }
   if (options.username.includes("@")) {
     return [
