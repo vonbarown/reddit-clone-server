@@ -11,11 +11,11 @@ import { MyContext } from "src/types";
 import { User } from "src/entities/User";
 import argon2 from "argon2";
 import { EntityManager } from "@mikro-orm/postgresql";
-import { COOKIE_NAME } from "src/constants";
-import { Post } from "src/entities/Posts";
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from "src/constants";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "src/utils/validateRegister";
 import { sendEmail } from "src/utils/sendEmail";
+import { v4 } from "uuid";
 
 @ObjectType()
 class FieldError {
@@ -40,7 +40,7 @@ export class UserResolver {
   async forgotPassword(
     @Arg("email") email: string,
     @Ctx()
-    { em }: MyContext
+    { em, redis }: MyContext
   ) {
     const user = await em.findOne(User, { email });
 
@@ -48,7 +48,14 @@ export class UserResolver {
       return true;
     }
 
-    const token = "fbvduiihqueruu748375bfliqbevpceibF";
+    const token = v4();
+
+    await redis.set(
+      FORGOT_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24 * 3 //3 days
+    );
 
     sendEmail(
       email,
