@@ -15,6 +15,7 @@ import { COOKIE_NAME } from "src/constants";
 import { Post } from "src/entities/Posts";
 import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "src/utils/validateRegister";
+import { sendEmail } from "src/utils/sendEmail";
 
 @ObjectType()
 class FieldError {
@@ -41,7 +42,18 @@ export class UserResolver {
     @Ctx()
     { em }: MyContext
   ) {
-    // const user = await em.findOne(User), { email });
+    const user = await em.findOne(User, { email });
+
+    if (!user) {
+      return true;
+    }
+
+    const token = "fbvduiihqueruu748375bfliqbevpceibF";
+
+    sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
+    );
     return true;
   }
 
