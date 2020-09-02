@@ -15,7 +15,7 @@ import { UsernamePasswordInput } from "./UsernamePasswordInput";
 import { validateRegister } from "src/utils/validateRegister";
 import { sendEmail } from "src/utils/sendEmail";
 import { v4 } from "uuid";
-import { getConnection, createQueryBuilder } from "typeorm";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 class FieldError {
@@ -161,7 +161,7 @@ export class UserResolver {
         })
         .returning("*")
         .execute();
-      user = result.raw;
+      user = result.raw[0];
     } catch (err) {
       console.log(err);
 
