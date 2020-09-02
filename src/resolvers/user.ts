@@ -94,11 +94,16 @@ export class UserResolver {
 
   @Mutation(() => Boolean)
   async forgotPassword(
-    @Arg("email") email: string,
+    @Arg("usernameOrEmail") usernameOrEmail: string,
     @Ctx()
     { em, redis }: MyContext
   ) {
-    const user = await em.findOne(User, { email });
+    const user = await em.findOne(
+      User,
+      usernameOrEmail.includes("@")
+        ? { email: usernameOrEmail }
+        : { username: usernameOrEmail }
+    );
 
     if (!user) {
       return true;
@@ -114,7 +119,7 @@ export class UserResolver {
     );
 
     sendEmail(
-      email,
+      user.email,
       `<a href="http://localhost:3000/change-password/${token}">reset password</a>`
     );
     return true;
