@@ -10,6 +10,7 @@ import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import path from "path";
 
 import { createConnection } from "typeorm";
 import { Post } from "./entities/Posts";
@@ -23,6 +24,7 @@ const main = async () => {
     password: "postgres",
     logging: true,
     synchronize: true,
+    migrations: [path.join(__dirname, "./migrations/*")],
     entities: [Post, User],
   });
 
@@ -56,6 +58,8 @@ const main = async () => {
       resave: false,
     })
   );
+
+  await conn.runMigrations();
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
