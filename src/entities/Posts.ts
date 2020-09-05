@@ -33,6 +33,7 @@ export class Post extends BaseEntity {
   @Column()
   creatorId: Number;
 
+  @Field()
   @ManyToOne(() => User, (user) => user.posts)
   creator: User;
 
