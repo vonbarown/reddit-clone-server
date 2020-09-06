@@ -6,6 +6,8 @@ import {
   Ctx,
   ObjectType,
   Query,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 import { MyContext } from "src/types";
 import { User } from "src/entities/User";
@@ -34,8 +36,16 @@ class UserResponse {
   user?: User;
 }
 
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+  @FieldResolver()
+  email(@Root() user: User, @Ctx() { req }: MyContext) {
+    if (req.session.userId === user.id) {
+      return user.email;
+    }
+    return "";
+  }
+
   @Mutation(() => UserResponse)
   async changePassword(
     @Arg("token") token: string,
