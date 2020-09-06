@@ -16,6 +16,7 @@ import { Post } from "src/entities/Posts";
 import { MyContext } from "src/types";
 import { isAuth } from "src/middleware/isAuth";
 import { getConnection } from "typeorm";
+import { Upvote } from "src/entities/Upvote";
 
 @InputType()
 class PostInput {
@@ -38,6 +39,42 @@ export class PostResolver {
   @FieldResolver(() => String)
   textSnippet(@Root() root: Post) {
     return root.text.slice(0, 50);
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg("postId", () => Int) postId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const isUpvote = value !== -1;
+
+    const realValue = isUpvote ? 1 : -1;
+    const { userId } = req.session;
+
+    // await Upvote.insert({
+    //   userId,
+    //   postId,
+    //   value: realValue,
+    // });
+
+    await getConnection().query(
+      `
+      START TRANSACTION;
+
+      insert into upvote  ("userId","postId",values)
+      values (${userId},${postId},${realValue})
+
+      update post 
+      set points = points + ${realValue}
+      where id = ${postId};
+
+      COMMIT;
+      `
+    );
+
+    return true;
   }
 
   @Query(() => PaginatedPosts)
