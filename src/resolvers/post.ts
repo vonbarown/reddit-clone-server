@@ -63,8 +63,8 @@ export class PostResolver {
       `
       START TRANSACTION;
 
-      insert into upvote  ("userId","postId",values)
-      values (${userId},${postId},${realValue})
+      insert into upvote  ("userId","postId","value")
+      values (${userId},${postId},${realValue});
 
       update post 
       set points = points + ${realValue}
