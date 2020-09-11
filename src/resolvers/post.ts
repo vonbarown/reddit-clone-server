@@ -61,7 +61,7 @@ export class PostResolver {
           `
           update upvote
           set value = $1
-          Where "postId" = $2 and "userId" = 3;
+          Where "postId" = $2 and "userId" = $3;
         `,
           [realValue, postId, userId]
         );
