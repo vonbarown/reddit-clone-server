@@ -45,7 +45,7 @@
     "graphql": "^15.3.0",
     "ioredis": "^4.17.3",
     "pg": "^8.4.2",
-    "nodemailer": "^6.4.14",
+    "nodemailer": "^6.7.3",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^9.0.0",
     "type-graphql": "^1.0.0",
